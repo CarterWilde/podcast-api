@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
 let etag = "";
 app.get('/episodes', async (req, res) => {
     const cachePath = './episodes.cache.json';
+    res.set('Access-Control-Allow-Origin', FRONT_END_ENDPOINT);
     try {
         const response = await axios.get(`https://buzzsprout.com/api/${PODCAST_ID}/episodes.json`, {
             headers: {
@@ -26,7 +27,6 @@ app.get('/episodes', async (req, res) => {
             }
         });
         etag = response.headers.etag;
-        res.set('Access-Control-Allow-Origin', FRONT_END_ENDPOINT);
         res.json(response.data);
         if (response.status === 200) {
             fs.writeFile(cachePath, JSON.stringify(response.data), () => {
